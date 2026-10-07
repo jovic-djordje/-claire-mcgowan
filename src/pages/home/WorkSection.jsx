@@ -5,7 +5,8 @@ import FourGridIcon from "../../components/icons/FourGridIcon";
 import NineGridIcon from "../../components/icons/NineGridIcon";
 import { WorkImage, works } from "../../assets/images";
 import { HiMiniArrowSmallRight } from "react-icons/hi2";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const WorkSection = () => {
   const [hoveredId, setHoveredId] = useState(null);
@@ -37,14 +38,68 @@ const WorkSection = () => {
     });
   };
 
+  const renderCard = (work) => {
+    if (!work) return null;
+    return (
+      <article
+        className={`work-card ${
+          hoveredId && hoveredId !== work.id ? "is-dimmed" : ""
+        }`}
+        key={work.id}
+      >
+        <Link
+          className="work-card-link"
+          to={`/weddings/${work.slug}`}
+          aria-label={`View ${work.couple}'s wedding`}
+          onPointerEnter={() => setHoveredId(work.id)}
+          onPointerLeave={() => setHoveredId(null)}
+          onPointerMove={handlePointerMove}
+        >
+          {/* Gornji bar sa ( 01 ) i View → */}
+          <div className="work-card-info">
+            <div className="work-card-title-box">
+              <span className="work-card-number">
+                {String(work.id).padStart(2, "0")}
+              </span>
+              <span className="work-card-couple">{work.couple}</span>
+            </div>
+          </div>
+
+          {/* Kontejner slike sa custom cursorom */}
+          <div className="work-card-image-wrapper">
+            <WorkImage
+              src={work.image}
+              alt={work.alt}
+              className="work-card-image"
+            />
+
+            {hoveredId === work.id && (
+              <span
+                className="view-cursor"
+                aria-hidden="true"
+                style={{
+                  left: `${cursorPosition.x}px`,
+                  top: `${cursorPosition.y}px`,
+                }}
+              >
+                <HiMiniArrowSmallRight className="view-arrow" />
+                <span className="view-text">View</span>
+              </span>
+            )}
+          </div>
+        </Link>
+      </article>
+    );
+  };
+
   return (
     <section className="work">
       <div className="work-section-holder">
         <div className="work-section-text-holder">
-          <p>Selected Works, 2026</p>
+          <p>Selected Works</p>
+          <p className="updated">Updated: 07.10.2026</p>
 
-          <div className="square-holder">
-            {/* Desktop: više kolona */}
+          {/*  <div className="square-holder">
             <div className="grid-controls grid-controls--desktop">
               <button
                 className={`grid-button ${gridView === 3 ? "active" : ""}`}
@@ -67,7 +122,6 @@ const WorkSection = () => {
               </button>
             </div>
 
-            {/* Tablet i mobile: 2 ili 1 kolona */}
             <div className="grid-controls grid-controls--small">
               <button
                 className={`grid-button ${gridView === 1 ? "active" : ""}`}
@@ -89,56 +143,40 @@ const WorkSection = () => {
                 <TwoColumnIcon className="grid-icon" />
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
+
         <span className="divider"></span>
 
-        <div className={`work-gallery work-gallery--${gridView}`}>
-          {works.map((work) => (
-            <article
-              className={`work-card ${
-                hoveredId && hoveredId !== work.id ? "is-dimmed" : ""
-              }`}
-              key={work.id}
-            >
-              <button
-                className="work-card-link"
-                type="button"
-                aria-label={`View ${work.couple}'s wedding`}
-                onPointerEnter={() => setHoveredId(work.id)}
-                onPointerLeave={() => setHoveredId(null)}
-                onPointerMove={handlePointerMove}
-              >
-                <WorkImage
-                  src={work.image}
-                  alt={work.alt}
-                  className="work-card-image"
-                />
+        {/* --- WORK 7-COLUMN ASYMMETRICAL LAYOUT --- */}
+        <div className="work-grid">
+          {/* Red 1: Kolone 1, 3, 5, 7 */}
+          <div className="work-grid-row">
+            <div className="col-1">{renderCard(works[0])}</div>
+            <div className="col-3">{renderCard(works[1])}</div>
+            <div className="col-5">{renderCard(works[2])}</div>
+            <div className="col-7">{renderCard(works[3])}</div>
+          </div>
 
-                {hoveredId === work.id && (
-                  <span
-                    className="view-cursor"
-                    aria-hidden="true"
-                    style={{
-                      left: `${cursorPosition.x}px`,
-                      top: `${cursorPosition.y}px`,
-                    }}
-                  >
-                    <HiMiniArrowSmallRight className="view-arrow" />
-                    <span className="view-text">View</span>
-                  </span>
-                )}
-              </button>
+          {/* Red 2: Kolone 2, 4, 6 */}
+          <div className="work-grid-row">
+            <div className="col-2">{renderCard(works[4])}</div>
+            <div className="col-4">{renderCard(works[5])}</div>
+            <div className="col-6">{renderCard(works[6])}</div>
+          </div>
 
-              <div className="work-card-info">
-                <span>{String(work.id).padStart(2, "0")}</span>
-                <p>
-                  {work.couple}&apos;s <br />
-                  Wedding
-                </p>
-              </div>
-            </article>
-          ))}
+          {/* Red 3: Kolone 3, 5 */}
+          <div className="work-grid-row">
+            <div className="col-3">{renderCard(works[7])}</div>
+            <div className="col-5">{renderCard(works[8])}</div>
+          </div>
+
+          {/* Red 4: Kolone 2, 4, 6 */}
+          <div className="work-grid-row">
+            <div className="col-2">{renderCard(works[9])}</div>
+            <div className="col-4">{renderCard(works[10])}</div>
+            <div className="col-6">{renderCard(works[11])}</div>
+          </div>
         </div>
 
         <span className="divider"></span>
