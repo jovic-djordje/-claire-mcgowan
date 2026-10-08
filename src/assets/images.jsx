@@ -22,7 +22,7 @@ import emmaSeven from "./EJSeven.webp";
 import emmaEight from "./EJEight.webp";
 import catrinOne from "./CTOne.webp";
 import catrinTwo from "./CTTwo.webp";
-import catrinThree from "./CTthree.webp";
+import catrinThree from "./CTThree.webp";
 import catrinFour from "./CTFour.webp";
 import catrinFive from "./CTFive.webp";
 import catrinSix from "./CTSix.webp";
