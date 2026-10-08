@@ -5,13 +5,76 @@ import FourGridIcon from "../../components/icons/FourGridIcon";
 import NineGridIcon from "../../components/icons/NineGridIcon";
 import { WorkImage, works } from "../../assets/images";
 import { HiMiniArrowSmallRight } from "react-icons/hi2";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { navigateWithTransition } from "../../utils/transition";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const WorkSection = () => {
   const [hoveredId, setHoveredId] = useState(null);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [gridView, setGridView] = useState(4);
+  const navigate = useNavigate();
+  const sectionRef = useRef(null);
+
+  // --- SCROLL ANIMACIJA: CLIP-PATH REVEAL ---
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const rows = document.querySelectorAll(".work-grid-row");
+
+      rows.forEach((row) => {
+        const images = row.querySelectorAll(".work-card-image");
+        const infos = row.querySelectorAll(".work-card-info");
+
+        // 1. Slike se odmotavaju odozdo ka gore sa blagim skaliranjem
+        gsap.fromTo(
+          images,
+          {
+            clipPath: "inset(100% 0 0 0)",
+            scale: 1.08,
+          },
+          {
+            clipPath: "inset(0% 0 0 0)",
+            scale: 1,
+            duration: 1.1,
+            stagger: 0.08,
+            ease: "power3.inOut",
+            scrollTrigger: {
+              trigger: row,
+              start: "top 92%", // Pokreće se kad red uđe u donjih 15% ekrana
+              toggleActions: "play none none none",
+            },
+          },
+        );
+
+        // 2. Gornji info bar (broj i ime) lagano fejdaju odozdo
+        gsap.fromTo(
+          infos,
+          {
+            opacity: 0,
+            y: 12,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: row,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 1000px)");
@@ -38,6 +101,11 @@ const WorkSection = () => {
     });
   };
 
+  const handleCardClick = (e, slug) => {
+    e.preventDefault();
+    navigateWithTransition(`/weddings/${slug}`, navigate);
+  };
+
   const renderCard = (work) => {
     if (!work) return null;
     return (
@@ -47,9 +115,10 @@ const WorkSection = () => {
         }`}
         key={work.id}
       >
-        <Link
+        <a
+          href={`/weddings/${work.slug}`}
           className="work-card-link"
-          to={`/weddings/${work.slug}`}
+          onClick={(e) => handleCardClick(e, work.slug)}
           aria-label={`View ${work.couple}'s wedding`}
           onPointerEnter={() => setHoveredId(work.id)}
           onPointerLeave={() => setHoveredId(null)}
@@ -87,7 +156,7 @@ const WorkSection = () => {
               </span>
             )}
           </div>
-        </Link>
+        </a>
       </article>
     );
   };
