@@ -7,47 +7,45 @@ const PageTransition = ({ children }) => {
   const location = useLocation();
   const overlayRef = useRef(null);
   const contentRef = useRef(null);
-  const isFirstRender = useRef(true);
 
   useEffect(() => {
-    // Preskačemo animaciju na prvo učitavanje sajta
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
     const overlay = overlayRef.current;
     const content = contentRef.current;
 
-    // Timeline: zavesa se povlači nagore i otkriva novu stranicu
+    // Kada se promeni stranica, podigni zavesu ka gore
+    gsap.set(overlay, { display: "block" });
+
     const tl = gsap.timeline();
 
-    tl.set(overlay, {
-      scaleY: 1,
-      transformOrigin: "bottom center",
-      display: "block",
-    })
-      .set(content, {
-        opacity: 0,
-        scale: 0.98,
-      })
-      .to(overlay, {
+    tl.fromTo(
+      overlay,
+      {
+        scaleY: 1,
+        transformOrigin: "bottom center",
+      },
+      {
         scaleY: 0,
         transformOrigin: "top center",
-        duration: 0.75,
+        duration: 0.65,
         ease: "power4.inOut",
-      })
-      .to(
-        content,
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.6,
-          ease: "power3.out",
+        onComplete: () => {
+          gsap.set(overlay, { display: "none", scaleY: 0 });
         },
-        "-=0.4",
-      )
-      .set(overlay, { display: "none" });
+      },
+    ).fromTo(
+      content,
+      {
+        opacity: 0.85,
+        scale: 0.99,
+      },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4,
+        ease: "power2.out",
+      },
+      "-=0.3",
+    );
 
     return () => {
       tl.kill();
@@ -56,7 +54,6 @@ const PageTransition = ({ children }) => {
 
   return (
     <>
-      {/* Zavesa koja pravi Framer wipe efekat */}
       <div className="page-transition-overlay" ref={overlayRef} />
       <div className="page-transition-content" ref={contentRef}>
         {children}

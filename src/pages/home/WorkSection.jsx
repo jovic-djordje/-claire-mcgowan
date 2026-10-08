@@ -20,57 +20,72 @@ const WorkSection = () => {
   const navigate = useNavigate();
   const sectionRef = useRef(null);
 
-  // --- SCROLL ANIMACIJA: CLIP-PATH REVEAL ---
+  // --- SCROLL ANIMACIJA: SVAKA KARTICA SE POJEDINAČNO OD MOTAVA ---
   useEffect(() => {
+    const isMobile = window.innerWidth <= 650;
+
     const ctx = gsap.context(() => {
-      const rows = document.querySelectorAll(".work-grid-row");
+      const cards = gsap.utils.toArray(".work-card");
 
-      rows.forEach((row) => {
-        const images = row.querySelectorAll(".work-card-image");
-        const infos = row.querySelectorAll(".work-card-info");
+      cards.forEach((card) => {
+        const image = card.querySelector(".work-card-image");
+        const info = card.querySelector(".work-card-info");
 
-        // 1. Slike se odmotavaju odozdo ka gore sa blagim skaliranjem
-        gsap.fromTo(
-          images,
-          {
-            clipPath: "inset(100% 0 0 0)",
-            scale: 1.08,
-          },
-          {
-            clipPath: "inset(0% 0 0 0)",
-            scale: 1,
-            duration: 1.1,
-            stagger: 0.08,
-            ease: "power3.inOut",
-            scrollTrigger: {
-              trigger: row,
-              start: "top 92%", // Pokreće se kad red uđe u donjih 15% ekrana
-              toggleActions: "play none none none",
+        if (image) {
+          // 1. Odmotavanje slike odozdo ka gore
+          gsap.fromTo(
+            image,
+            {
+              clipPath: "inset(100% 0 0 0)",
+              scale: 1.12,
             },
-          },
-        );
-
-        // 2. Gornji info bar (broj i ime) lagano fejdaju odozdo
-        gsap.fromTo(
-          infos,
-          {
-            opacity: 0,
-            y: 12,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: row,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
+            {
+              clipPath: "inset(0% 0 0 0)",
+              scale: 1,
+              duration: isMobile ? 0.95 : 1.15,
+              ease: "power3.inOut",
+              scrollTrigger: {
+                trigger: card,
+                start: isMobile ? "top 92%" : "top 85%",
+                toggleActions: isMobile
+                  ? "play none none none"
+                  : "play none none reverse",
+              },
             },
-          },
-        );
+          );
+        }
+
+        if (info) {
+          // 2. Info bar (broj i ime) ulazi odozdo
+          gsap.fromTo(
+            info,
+            {
+              opacity: 0,
+              y: 12,
+            },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: card,
+                start: isMobile ? "top 92%" : "top 85%",
+                toggleActions: isMobile
+                  ? "play none none none"
+                  : "play none none reverse",
+              },
+            },
+          );
+        }
       });
+
+      // Osvežavamo ScrollTrigger kalkulacije čim browser složi layout
+      const timer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 250);
+
+      return () => clearTimeout(timer);
     }, sectionRef);
 
     return () => ctx.revert();
@@ -162,57 +177,11 @@ const WorkSection = () => {
   };
 
   return (
-    <section className="work">
+    <section className="work" ref={sectionRef}>
       <div className="work-section-holder">
         <div className="work-section-text-holder">
           <p>Selected Works</p>
           <p className="updated">Updated: 07.10.2026</p>
-
-          {/*  <div className="square-holder">
-            <div className="grid-controls grid-controls--desktop">
-              <button
-                className={`grid-button ${gridView === 3 ? "active" : ""}`}
-                type="button"
-                aria-label="Show portfolio in three columns"
-                aria-pressed={gridView === 3}
-                onClick={() => setGridView(3)}
-              >
-                <FourGridIcon className="grid-icon" />
-              </button>
-
-              <button
-                className={`grid-button ${gridView === 4 ? "active" : ""}`}
-                type="button"
-                aria-label="Show portfolio in four columns"
-                aria-pressed={gridView === 4}
-                onClick={() => setGridView(4)}
-              >
-                <NineGridIcon className="grid-icon" />
-              </button>
-            </div>
-
-            <div className="grid-controls grid-controls--small">
-              <button
-                className={`grid-button ${gridView === 1 ? "active" : ""}`}
-                type="button"
-                aria-label="Show portfolio in one column"
-                aria-pressed={gridView === 1}
-                onClick={() => setGridView(1)}
-              >
-                <OneColumnIcon className="grid-icon" />
-              </button>
-
-              <button
-                className={`grid-button ${gridView === 2 ? "active" : ""}`}
-                type="button"
-                aria-label="Show portfolio in two columns"
-                aria-pressed={gridView === 2}
-                onClick={() => setGridView(2)}
-              >
-                <TwoColumnIcon className="grid-icon" />
-              </button>
-            </div>
-          </div> */}
         </div>
 
         <span className="divider"></span>

@@ -8,9 +8,9 @@ export const navigateWithTransition = (targetUrl, navigate) => {
     return;
   }
 
+  // 1. Zavesa se diže odozdo i pokriva trenutnu stranu
   gsap.set(overlay, { display: "block" });
 
-  // 1. Zavesa se diže odozdo i prekriva trenutnu stranicu
   gsap.fromTo(
     overlay,
     {
@@ -19,10 +19,10 @@ export const navigateWithTransition = (targetUrl, navigate) => {
     },
     {
       scaleY: 1,
-      duration: 0.6,
+      duration: 0.5,
       ease: "power4.inOut",
       onComplete: () => {
-        // 2. Prebacujemo rutu dok je ekran pokriven
+        // 2. Prebaci rutu tek kada je ceo ekran pokriven
         navigate(targetUrl);
       },
     },

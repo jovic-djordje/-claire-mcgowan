@@ -34,3 +34,17 @@ body {
 body.dark-theme {
   background-color: #1a1a1a;
 }
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh; /* Dynamic viewport height savršen za mobilne */
+  width: 100%;
+}
+
+.page-transition-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

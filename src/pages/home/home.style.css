@@ -347,13 +347,13 @@
   /* transition: opacity 0.3s ease;*/
   clip-path: inset(100% 0 0 0);
   will-change: clip-path, transform;
-  transition:
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.3s ease;
 }
 
 .work-card-link:hover .work-card-image {
   transform: scale(0.95);
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s ease;
 }
 
 /* Hover dimming */

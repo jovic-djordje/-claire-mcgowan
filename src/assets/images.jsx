@@ -123,7 +123,15 @@ const HeroImg = ({ className }) => {
 };
 
 const WorkImage = ({ src, alt, className = "" }) => {
-  return <img src={src} alt={alt} className={className} loading="lazy" />;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      loading="lazy"
+      decoding="async"
+    />
+  );
 };
 
 const works = [
