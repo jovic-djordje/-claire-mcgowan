@@ -115,6 +115,9 @@ const HeroImg = ({ className }) => {
       src={heroImg}
       alt="Claire McGowan, wedding photographer"
       className={className}
+      fetchPriority="high"
+      loading="eager"
+      decoding="async"
     />
   );
 };
