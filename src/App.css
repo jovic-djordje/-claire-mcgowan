@@ -1,3 +1,35 @@
+/* --- SAKRIVANJE SCROLLBARA (Chrome, Safari, Firefox, Edge, iOS, Android) --- */
+html,
+body,
+.app,
+.page-transition-content,
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE i Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.app::-webkit-scrollbar,
+.page-transition-content::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge, Opera, Mobile WebKit */
+  width: 0;
+  height: 0;
+}
+
+body {
+  margin: 0;
+  background-color: #fafafa;
+  transition: background-color 0.35s ease;
+  overflow-y: scroll; /* Dozvoljava skrolovanje bez pomeranja layouta */
+}
+
+body.dark-theme {
+  background-color: #1a1a1a;
+}
+
+/* --- APP TEME I STRUKTURA --- */
 .app {
   --background: #fafafa;
   --text: #1a1a1a;
@@ -7,7 +39,10 @@
   --button-inner: #fafafa;
   --image-wash: rgba(250, 250, 250, 0.35);
 
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh; /* Dynamic viewport height savršen za mobilne */
+  width: 100%;
   background-color: var(--background);
   color: var(--text);
   transition:
@@ -23,23 +58,6 @@
   --button-background: #fafafa;
   --button-inner: #1a1a1a;
   --image-wash: rgba(26, 26, 26, 0.35);
-}
-
-body {
-  margin: 0;
-  background-color: #fafafa;
-  transition: background-color 0.35s ease;
-}
-
-body.dark-theme {
-  background-color: #1a1a1a;
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100dvh; /* Dynamic viewport height savršen za mobilne */
-  width: 100%;
 }
 
 .page-transition-content {
